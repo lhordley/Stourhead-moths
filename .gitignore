@@ -1,0 +1,16 @@
+*.Rproj
+*.zip
+*.7z
+*.xlsx
+*.png
+*.RDataTmp*
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+*.docx
+*.pptx
+*.JPG
+*.pdf
+Graphs/
+Results/
