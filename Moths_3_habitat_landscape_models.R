@@ -11,6 +11,7 @@ library(glmmTMB)
 library(dplyr)
 library(ggeffects)
 library(performance)
+library(ggplot2)
 
 rm(list = ls())
 options(scipen=999)
@@ -206,6 +207,30 @@ tot_rich_hab_sum$model <- "habitat"
 tot_rich_hab_sum$AIC <- AIC(tot_rich_hab)
 
 write.csv(tot_rich_hab_sum, file="Results/Total_richness_habitat.csv", row.names=FALSE)
+
+## plot canopy openness result
+openness <- ggpredict(tot_rich_hab, terms="canopy_openess")
+richness_open <- ggplot(openness, aes(x, predicted)) +
+  geom_line() +
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high), alpha = .1)+
+  geom_point(data=moth_hab_data, aes(x=canopy_openess, y=richness))+
+  labs(x="Canopy openness", y="Total species \nrichness")+
+  # scale_y_continuous(breaks=c(2,4,6,8,10))+
+  theme_classic()
+richness_open
+ggsave(richness_open, file="Graphs/Total_richness_canopy_openness.png")
+
+## save predicted values for complexity score
+complex <- ggpredict(tot_rich_hab, terms="complexity_score")
+richness_complex <- ggplot(complex, aes(x, predicted)) +
+  geom_line() +
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high), alpha = .1)+
+  geom_point(data=moth_hab_data, aes(x=complexity_score, y=richness))+
+  labs(x="Complexity score", y="Total species \nrichness")+
+  # scale_y_continuous(breaks=c(2,4,6,8,10))+
+  theme_classic()
+richness_complex
+ggsave(richness_complex, file="Graphs/Total_richness_complexity_score.png")
 
 ###################################################################################################################################
 
@@ -677,6 +702,18 @@ final_mod4_sum$AIC <- AIC(final_mod4)
 
 write.csv(final_mod4_sum, file="Results/Conifer_richness_habitat.csv", row.names=FALSE)
 
+## save predicted values for basal area
+basal <- ggpredict(final_mod4, terms="basal_area")
+conifer_rich_basal <- ggplot(basal, aes(x, predicted)) +
+  geom_line() +
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high), alpha = .1)+
+  geom_point(data=moth_hab_data, aes(x=basal_area, y=conifer_rich))+
+  labs(x="Basal area", y="Conifer species \nrichness")+
+  # scale_y_continuous(breaks=c(2,4,6,8,10))+
+  theme_classic()
+conifer_rich_basal
+ggsave(conifer_rich_basal, file="Graphs/Conifer_richness_basal_area.png")
+
 
 ###################################################################################################################################
 
@@ -838,6 +875,18 @@ final_mod5_sum$AIC <- AIC(final_mod5)
 conifer_rich_hab_mods <- rbind(final_mod2_sum, final_mod5_sum)
 write.csv(conifer_rich_hab_mods, file="Results/Conifer_only_richness_habitat.csv", row.names=FALSE)
 
+## save predicted values for dbh
+dbh <- ggpredict(final_mod5, terms="dbh_average")
+conifer_only_rich_dbh <- ggplot(dbh, aes(x, predicted)) +
+  geom_line() +
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high), alpha = .1)+
+  geom_point(data=moth_hab_data, aes(x=dbh_average, y=conifer_only_rich))+
+  labs(x="Average DBH", y="Conifer specialist \nspecies richness")+
+  # scale_y_continuous(breaks=c(2,4,6,8,10))+
+  theme_classic()
+conifer_only_rich_dbh
+ggsave(conifer_only_rich_dbh, file="Graphs/Conifer_only_richness_average_dbh.png")
+
 ###################################################################################################################################
 
 # Woodland richness
@@ -985,6 +1034,18 @@ row.names(wood_rich_hab_sum) <- 1:nrow(wood_rich_hab_sum)
 wood_rich_hab_sum$model <- "habitat"
 wood_rich_hab_sum$AIC <- AIC(wood_rich_hab)
 write.csv(wood_rich_hab_sum, file="Results/Woodland_richness_habitat.csv", row.names=FALSE)
+
+## save predicted values for complexity score
+complex <- ggpredict(wood_rich_hab, terms="complexity_score")
+wood_rich_complex <- ggplot(complex, aes(x, predicted)) +
+  geom_line() +
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high), alpha = .1)+
+  geom_point(data=moth_hab_data, aes(x=complexity_score, y=woodland_rich))+
+  labs(x="Complexity score", y="Woodland species \nrichness")+
+  # scale_y_continuous(breaks=c(2,4,6,8,10))+
+  theme_classic()
+wood_rich_complex
+ggsave(wood_rich_complex, file="Graphs/Woodland_richness_complexity_score.png")
 
 ###################################################################################################################################
 
@@ -1590,6 +1651,18 @@ tot_abund_hab_sum$model <- "habitat"
 tot_abund_hab_sum$AIC <- AIC(tot_abund_hab)
 write.csv(tot_abund_hab_sum, file="Results/Total_abund_habitat.csv", row.names=FALSE)
 
+## save predicted values for canopy openness
+openness <- ggpredict(tot_abund_hab, terms="canopy_openess")
+tot_abund_open <- ggplot(openness, aes(x, predicted)) +
+  geom_line() +
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high), alpha = .1)+
+  geom_point(data=moth_hab_data, aes(x=canopy_openess, y=tot_abund))+
+  labs(x="Canopy openness", y="Total species \nabundance")+
+  # scale_y_continuous(breaks=c(2,4,6,8,10))+
+  theme_classic()
+tot_abund_open
+ggsave(tot_abund_open, file="Graphs/Total_abundace_canopy_openness.png")
+
 ###################################################################################################################################
 
 # Broadleaf abundance
@@ -1736,6 +1809,17 @@ broad_abund_hab_sum$model <- "habitat"
 broad_abund_hab_sum$AIC <- AIC(broad_abund_hab)
 write.csv(broad_abund_hab_sum, file="Results/Broadleaf_abund_habitat.csv", row.names=FALSE)
 
+## save predicted values for % broadleaf
+broadleaf <- ggpredict(broad_abund_hab , terms="per_broadleaf_canopy")
+broadleaf_broadleaf <- ggplot(broadleaf, aes(x, predicted)) +
+  geom_line() +
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high), alpha = .1)+
+  geom_point(data=moth_hab_data, aes(x=per_broadleaf_canopy, y=broadleaf_abund))+
+  labs(x="Percentage \nbroadleaf canopy", y="Broadleaf species \nabundance")+
+  # scale_y_continuous(breaks=c(2,4,6,8,10))+
+  theme_classic()
+broadleaf_broadleaf
+ggsave(broadleaf_broadleaf, file="Graphs/Broadleaf_abundance_broadleaf_cover.png")
 
 ###################################################################################################################################
 
@@ -2180,6 +2264,17 @@ final_mod2_sum$model <- "arable 500m"
 final_mod2_sum$AIC <- AIC(final_mod2)
 write.csv(final_mod2_sum, file="Results/Conifer_only_abund_habitat.csv", row.names=FALSE)
 
+## save predicted values for dbh
+dbh <- ggpredict(final_mod2, terms="dbh_average")
+conifer_only_abund_dbh <- ggplot(dbh, aes(x, predicted)) +
+  geom_line() +
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high), alpha = .1)+
+  geom_point(data=moth_hab_data, aes(x=dbh_average, y=conifer_only_abund))+
+  labs(x="Average DBH", y="Conifer specialist \nspecies abundance")+
+  # scale_y_continuous(breaks=c(2,4,6,8,10))+
+  theme_classic()
+conifer_only_abund_dbh
+ggsave(conifer_only_abund_dbh, file="Graphs/Conifer_only_abund_average_dbh.png")
 
 ###################################################################################################################################
 
@@ -2325,6 +2420,25 @@ wood_abund_hab_sum$model <- "habitat"
 wood_abund_hab_sum$AIC <- AIC(wood_abund_hab)
 write.csv(wood_abund_hab_sum, file="Results/Woodland_abund_habitat.csv", row.names=FALSE)
 
+## save predicted values for % broadleaf
+broadleaf <- ggpredict(wood_abund_hab, terms="per_broadleaf_canopy")
+woodland_abund_broadleaf <- ggplot(broadleaf, aes(x, predicted)) +
+  geom_line() +
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high), alpha = .1)+
+  geom_point(data=moth_hab_data, aes(x=per_broadleaf_canopy, y=woodland_abund))+
+  labs(x="Percentage \nbroadleaf canopy", y="Woodland species \nabundance")+
+  # scale_y_continuous(breaks=c(2,4,6,8,10))+
+  theme_classic()
+woodland_abund_broadleaf
+ggsave(woodland_abund_broadleaf, file="Graphs/Woodland_abundance_broadleaf_cover.png")
+
+# put graphs together for supplementary
+library(ggpubr)
+supp_graphs <- ggarrange(conifer_only_abund_dbh, conifer_only_rich_dbh, conifer_rich_basal, tot_abund_open, richness_open,
+                         richness_complex, wood_rich_complex, broadleaf_broadleaf, woodland_abund_broadleaf,
+                         labels=c("(a)", "(b)", "(c)", "(d)", "(e)", "(f)", "(g)", "(h)", "(i)"))
+supp_graphs
+ggsave(supp_graphs, file="Graphs/Supplementary_structure_graphs.png", height=10, width=10)
 
 ###################################################################################################################################
 
